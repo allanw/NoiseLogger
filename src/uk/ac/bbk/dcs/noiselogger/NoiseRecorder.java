@@ -1,5 +1,9 @@
 package uk.ac.bbk.dcs.noiselogger;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.app.Activity;
@@ -25,7 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 
-public class NoiseRecorder extends Activity {
+public class NoiseRecorder extends Activity implements LocationListener {
     private static final String LOG_TAG = "NoiseLogger";
     private static String mFileName = null;
 
@@ -33,6 +37,8 @@ public class NoiseRecorder extends Activity {
     private boolean isRecording = true;
 
     private MediaRecorder mRecorder = null;
+
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +57,18 @@ public class NoiseRecorder extends Activity {
                     System.out.println(max_amp);
                     stopRecording();
 
+                    // Get location
+                    locationManager = (LocationManager)getSystemService
+                            (Context.LOCATION_SERVICE);
+                    Location getLastLocation = locationManager.getLastKnownLocation
+                            (LocationManager.PASSIVE_PROVIDER);
+
+                    String lat = String.valueOf(getLastLocation.getLatitude());
+                    String lon = String.valueOf(getLastLocation.getLongitude());
+                    String locationLatLon = lat + "," + lon;
+
                     // Send to ThingSpeak
-                    new NoiseSendToCloud().execute();
+                    new NoiseSendToCloud().execute(lat, lon);
 
                     startRecording.setText("Record");
                 }
@@ -83,6 +99,16 @@ public class NoiseRecorder extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void onLocationChanged(Location location) {
+
+    }
+
+    public void onProviderDisabled(String provider) { }
+
+    public void onProviderEnabled(String provider) { }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
 
     private void startRecording() {
         // code taken from http://developer.android.com/guide/topics/media/audio-capture.html

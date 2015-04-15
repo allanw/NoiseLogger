@@ -24,7 +24,7 @@ public class NoiseSendToCloud extends AsyncTask<String, Void, Integer> {
 
     private static final String LOG_TAG = "NoiseLogger";
 
-    protected Integer doInBackground(String... urls) {
+    protected Integer doInBackground(String... dataToSend) {
         String url = "https://api.thingspeak.com/update";
 
         HttpClient client = new DefaultHttpClient();
@@ -32,7 +32,7 @@ public class NoiseSendToCloud extends AsyncTask<String, Void, Integer> {
 
         List<NameValuePair> urlParams = new ArrayList<NameValuePair>();
         urlParams.add(new BasicNameValuePair("key", "WIX5V1FL27ITZJKX"));
-        urlParams.add(new BasicNameValuePair("field3", "testing123"));
+        urlParams.add(new BasicNameValuePair("field3", dataToSend[0]));
 
         try {
             post.setEntity(new UrlEncodedFormEntity(urlParams));
