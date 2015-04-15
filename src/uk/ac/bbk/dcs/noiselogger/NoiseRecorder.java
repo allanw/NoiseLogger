@@ -68,7 +68,7 @@ public class NoiseRecorder extends Activity implements LocationListener {
                     String locationLatLon = lat + "," + lon;
 
                     // Send to ThingSpeak
-                    new NoiseSendToCloud().execute(lat, lon);
+                    new NoiseSendToCloud().execute(locationLatLon);
 
                     startRecording.setText("Record");
                 }
