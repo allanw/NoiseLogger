@@ -52,10 +52,7 @@ public class NoiseRecorder extends Activity implements LocationListener {
                     startRecording.setText("Stop recording");
                 }
                 else {
-                    int max_amp = mRecorder.getMaxAmplitude();
-                    System.out.println("Max amplitude");
-                    System.out.println(max_amp);
-                    stopRecording();
+                    String finalMaxAmplitude = String.valueOf(stopRecording());
 
                     // Get location
                     locationManager = (LocationManager)getSystemService
@@ -68,7 +65,7 @@ public class NoiseRecorder extends Activity implements LocationListener {
                     String locationLatLon = lat + "," + lon;
 
                     // Send to ThingSpeak
-                    new NoiseSendToCloud().execute(locationLatLon);
+                    new NoiseSendToCloud().execute(finalMaxAmplitude, locationLatLon);
 
                     startRecording.setText("Record");
                 }
@@ -124,14 +121,24 @@ public class NoiseRecorder extends Activity implements LocationListener {
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
         }
-
         mRecorder.start();
+        double maxAmp = mRecorder.getMaxAmplitude();
+        System.out.println("Starting amplitude is " + maxAmp);
     }
 
-    private void stopRecording() {
+    private double stopRecording() {
         mRecorder.stop();
+        double newMaxAmp = mRecorder.getMaxAmplitude();
         mRecorder.release();
         mRecorder = null;
+        return newMaxAmp;
+    }
+
+    public double getAmplitude() {
+        if (mRecorder != null)
+            return  mRecorder.getMaxAmplitude();
+        else
+            return 0;
     }
 
     public NoiseRecorder() {
