@@ -1,6 +1,7 @@
 package uk.ac.bbk.dcs.noiselogger;
 
 import android.content.Context;
+import android.provider.Settings.Secure;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -52,6 +53,11 @@ public class NoiseRecorder extends Activity implements LocationListener {
                     startRecording.setText("Stop recording");
                 }
                 else {
+                    // Get device ID
+                    String device_id = Secure.getString(getContentResolver(),
+                            Secure.ANDROID_ID);
+
+                    // Get max amplitude
                     String finalMaxAmplitude = String.valueOf(stopRecording());
 
                     // Get location
@@ -65,7 +71,7 @@ public class NoiseRecorder extends Activity implements LocationListener {
                     String locationLatLon = lat + "," + lon;
 
                     // Send to ThingSpeak
-                    new NoiseSendToCloud().execute(finalMaxAmplitude, locationLatLon);
+                    new NoiseSendToCloud().execute(finalMaxAmplitude, locationLatLon, device_id);
 
                     startRecording.setText("Record");
                 }

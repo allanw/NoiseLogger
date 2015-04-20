@@ -34,6 +34,7 @@ public class NoiseSendToCloud extends AsyncTask<String, Void, Integer> {
         urlParams.add(new BasicNameValuePair("key", "WIX5V1FL27ITZJKX"));
         urlParams.add(new BasicNameValuePair("field2", dataToSend[0]));
         urlParams.add(new BasicNameValuePair("field3", dataToSend[1]));
+        urlParams.add(new BasicNameValuePair("field4", dataToSend[2]));
 
         try {
             post.setEntity(new UrlEncodedFormEntity(urlParams));
